@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,14 +29,31 @@ namespace OOPizza
                 toBeAdded.notes = txtNotes.Text;
             }
             pizzas.Add(toBeAdded);
+            resetSelections();
             updateZas();
             updateSub();
             
         }
 
+        private void resetSelections()
+        {
+            btnAddPizza.Text = "Add Pizza";
+            cboType.SelectedIndex = -1;
+            cboSize.SelectedIndex = -1;
+            numSlices.Value = 8;
+
+        }
+
         private void cboType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            toBeAdded = options[cboType.SelectedIndex];
+            if (cboType.SelectedIndex > -1)
+            {
+                toBeAdded = options[cboType.SelectedIndex];
+            }
+            else
+            {
+                toBeAdded = new Pizza();
+            }
             updateTops();
         }
 
@@ -110,9 +128,12 @@ namespace OOPizza
         private void updateTops()
         {
             lstCurrentTops.Items.Clear();
-            foreach (string top in toBeAdded.toppings)
+            if (toBeAdded.toppings != null)
             {
-                lstCurrentTops.Items.Add(top);
+                foreach (string top in toBeAdded.toppings)
+                {
+                    lstCurrentTops.Items.Add(top);
+                }
             }
         }
 
@@ -149,7 +170,10 @@ namespace OOPizza
                 toBeAdded.basePrice();
                 updateCurrentCost();
             }
-            else
+            else if (cboSize.SelectedIndex == -1)
+            {
+                
+            }else
             {
                 MessageBox.Show("Please enter a pizza type first.", this.Text);
             }
@@ -161,6 +185,7 @@ namespace OOPizza
             {
                 pizzas.RemoveAt(lstCurrentPizzas.SelectedIndex);
                 updateZas();
+                txtDetails.Clear();
             }
             else
             {
@@ -175,6 +200,7 @@ namespace OOPizza
             if (yesNo == DialogResult.Yes)
             {
                 pizzas.Clear();
+                txtDetails.Clear();
                 updateZas();
             }
         }
@@ -186,5 +212,14 @@ namespace OOPizza
                 txtDetails.Text = pizzas[lstCurrentPizzas.SelectedIndex].printLayout();
             }
         }
+
+        private void btnCreateReport_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Report rp = new Report(pizzas, this); 
+            rp.Show();
+        }
+
+
     }
 }

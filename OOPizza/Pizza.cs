@@ -17,7 +17,7 @@ namespace OOPizza
 
     }
 
-    class Pizza
+     public class Pizza
     {
         public string name { get; set; }
         public List<string> toppings { get; set; }
@@ -29,6 +29,7 @@ namespace OOPizza
         public Pizza()
         {
             name = "Build Your Own";
+            toppings = new List<string>();
             basePrice();
         }
 

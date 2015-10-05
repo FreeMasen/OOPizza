@@ -411,6 +411,7 @@
             this.txtDetails.Location = new System.Drawing.Point(152, 271);
             this.txtDetails.Multiline = true;
             this.txtDetails.Name = "txtDetails";
+            this.txtDetails.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDetails.Size = new System.Drawing.Size(296, 147);
             this.txtDetails.TabIndex = 15;
             // 
@@ -451,6 +452,7 @@
             this.btnCreateReport.TabIndex = 19;
             this.btnCreateReport.Text = "Create Report";
             this.btnCreateReport.UseVisualStyleBackColor = true;
+            this.btnCreateReport.Click += new System.EventHandler(this.btnCreateReport_Click);
             // 
             // lblSubTotal
             // 
