@@ -77,7 +77,7 @@ namespace OOPizza
             //add the price on a new line
             notes += nl;
             notes += "Price: ";
-            notes += price.ToString();
+            notes += String.Format("{0:C}", price);
 
             return notes;
 

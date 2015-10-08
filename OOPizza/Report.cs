@@ -73,15 +73,17 @@ namespace OOPizza
             }
 
             decimal subTotal = calculateTotal();
+            decimal tax = (subTotal*0.75m);
 
-            txtReport.Text += string.Format("{0:C}", subTotal);
+
+            txtReport.Text += string.Format("{0}{1}SubTotal: {2:C}",nl,nl, subTotal);
             txtReport.Text += nl;
-            txtReport.Text += string.Format("Tax: {0:C}", (subTotal*0.075m));
+            txtReport.Text += string.Format("Tax: {0:C}", (tax));
             txtReport.Text += nl;
             txtReport.Text += nl;
             txtReport.Text += "Total:";
             txtReport.Text += nl;
-            txtReport.Text += string.Format("{0:C}", (subTotal*1.075m));
+            txtReport.Text += string.Format("{0:C}", (subTotal+tax));
         }
 
         private decimal calculateTotal()

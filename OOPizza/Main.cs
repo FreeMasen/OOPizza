@@ -17,46 +17,13 @@ namespace OOPizza
         {
             InitializeComponent();
         }
-
+        #region Global Variables
         private List<Pizza> options = new List<Pizza>();
         private List<Pizza> pizzas = new List<Pizza>();
         private Pizza toBeAdded;
+        #endregion
 
-        private void btnAddPizza_Click(object sender, EventArgs e)
-        {
-            if (txtNotes.Text.Length > 0)
-            {
-                toBeAdded.notes = txtNotes.Text;
-            }
-            pizzas.Add(toBeAdded);
-            resetSelections();
-            updateZas();
-            updateSub();
-            
-        }
-
-        private void resetSelections()
-        {
-            btnAddPizza.Text = "Add Pizza";
-            cboType.SelectedIndex = -1;
-            cboSize.SelectedIndex = -1;
-            numSlices.Value = 8;
-
-        }
-
-        private void cboType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboType.SelectedIndex > -1)
-            {
-                toBeAdded = options[cboType.SelectedIndex];
-            }
-            else
-            {
-                toBeAdded = new Pizza();
-            }
-            updateTops();
-        }
-
+        #region Visual Updates
         private void frmPizzaPartyPlanner_Load(object sender, EventArgs e)
         {
             options.Add(new Pizza());
@@ -75,66 +42,26 @@ namespace OOPizza
             }
         }
 
-        private void addTopping(object sender, EventArgs e)
+        private void resetSelections()
         {
-            CheckBox box = (CheckBox) sender;
+            btnAddPizza.Text = "Add Pizza";
+            cboType.SelectedIndex = -1;
+            cboSize.SelectedIndex = -1;
+            numSlices.Value = 8;
 
-            //this is required becuase a check or uncheck trigger the same event
-            if (box.Checked)
-            {
-                toBeAdded.toppings.Add(box.Text);
-                switch (toBeAdded.size)
-                {
-                    case size.Small:
-                        toBeAdded.price += 0.25m;
-                        break;
-                    case size.Medium:
-                        toBeAdded.price += 0.50m;
-                        break;
-                    case size.Large:
-                        toBeAdded.price += 0.75m;
-                        break;
-                }
-                box.Checked = false;
-            }
-            updateTops();
-            updateCurrentCost();
-
-        }
-
-        private void btnRemoveTopping_Click(object sender, EventArgs e)
-        {
-            if (lstCurrentTops.SelectedIndex > -1)
-            {
-                toBeAdded.toppings.RemoveAt(lstCurrentTops.SelectedIndex);
-                switch (toBeAdded.size)
-                {
-                    case size.Small:
-                        toBeAdded.price -= 0.25m;
-                        break;
-                    case size.Medium:
-                        toBeAdded.price -= 0.50m;
-                        break;
-                    case size.Large:
-                        toBeAdded.price -= 0.75m;
-                        break;
-                }
-            }
-
-            updateTops();
-            updateCurrentCost();
         }
 
         private void updateTops()
         {
             lstCurrentTops.Items.Clear();
-            if (toBeAdded.toppings != null)
+            if (toBeAdded != null)
             {
                 foreach (string top in toBeAdded.toppings)
                 {
                     lstCurrentTops.Items.Add(top);
                 }
             }
+            
         }
 
         private void updateZas()
@@ -148,10 +75,14 @@ namespace OOPizza
 
         private void updateCurrentCost()
         {
-            btnAddPizza.Text = String.Format("Add Pizza {0:C}", toBeAdded.price.ToString());
+            if (toBeAdded != null)
+            {
+                btnAddPizza.Text = String.Format("Add Pizza {0:C}", toBeAdded.price.ToString());
+            }
+            
         }
 
-        private void updateSub()
+        private void updateSubtotal()
         {
             decimal subTotal = 0;
             foreach (Pizza za in pizzas)
@@ -161,21 +92,64 @@ namespace OOPizza
             lblSubTotal.Text = string.Format("{0:C}", subTotal);
         }
 
-        private void cboSize_SelectedIndexChanged(object sender, EventArgs e)
+        private void lstCurrentPizzas_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //a user cannot enter a pizza size w/o entering a pizza type.
+            if (lstCurrentPizzas.SelectedIndex > -1)
+            {
+                txtDetails.Text = pizzas[lstCurrentPizzas.SelectedIndex].printLayout();
+            }
+
+            else
+            {
+                txtDetails.Clear();
+            }
+        }
+
+        private void btnCreateReport_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Report rp = new Report(pizzas, this);
+            rp.Show();
+        }
+        #endregion
+
+        #region Modify Pizza
+        private void cboType_SelectedIndexChanged(object sender, EventArgs e)
+        {
             if (cboType.SelectedIndex > -1)
             {
-                toBeAdded.size = (size) cboSize.SelectedIndex;
-                toBeAdded.basePrice();
-                updateCurrentCost();
-            }
-            else if (cboSize.SelectedIndex == -1)
-            {
+                toBeAdded = options[cboType.SelectedIndex];
                 
-            }else
+            }
+            else
             {
-                MessageBox.Show("Please enter a pizza type first.", this.Text);
+                toBeAdded = null;
+            }
+            setSize();
+            updateCurrentCost();
+            updateTops();
+        }
+
+        private void cboSize_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            setSize();
+            updateCurrentCost();
+        }
+
+        private void btnAddPizza_Click(object sender, EventArgs e)
+        {
+
+            if (isPizza())
+            {
+                setNotes();
+                pizzas.Add(toBeAdded);
+                resetSelections();
+                updateZas();
+                updateSubtotal();
+            }
+            else
+            {
+                checkCbos();
             }
         }
 
@@ -205,21 +179,121 @@ namespace OOPizza
             }
         }
 
-        private void lstCurrentPizzas_SelectedIndexChanged(object sender, EventArgs e)
+        private void setNotes()
         {
-            if (lstCurrentPizzas.SelectedIndex > -1)
+            if (isPizza())
             {
-                txtDetails.Text = pizzas[lstCurrentPizzas.SelectedIndex].printLayout();
+                if (toBeAdded.notes != null)
+                {
+                    toBeAdded.notes += Environment.NewLine + "        ";
+                }
+                toBeAdded.notes += txtNotes.Text;
             }
         }
 
-        private void btnCreateReport_Click(object sender, EventArgs e)
+        private void setSize()
         {
-            this.Hide();
-            Report rp = new Report(pizzas, this); 
-            rp.Show();
+
+            if (isPizza())
+            {
+                toBeAdded.size = (size)cboSize.SelectedIndex;
+                toBeAdded.basePrice();
+            }
+        }
+
+        private void addTopping(object sender, EventArgs e)
+        {
+            CheckBox box = (CheckBox)sender;
+
+            if (box.Checked)
+            {
+                if (isPizza())
+                {
+                    toBeAdded.toppings.Add(box.Text);
+
+                    switch (toBeAdded.size)
+                    {
+                        case size.Small:
+                            toBeAdded.price += 0.25m;
+                            break;
+                        case size.Medium:
+                            toBeAdded.price += 0.50m;
+                            break;
+                        case size.Large:
+                            toBeAdded.price += 0.75m;
+                            break;
+                    }
+
+                    box.Checked = false;
+                    updateTops();
+                    updateCurrentCost();
+                }
+
+                else
+                {
+                    checkCbos();
+                    box.Checked = false;
+                }
+            }
+
+        }
+
+        private void btnRemoveTopping_Click(object sender, EventArgs e)
+        {
+            if (lstCurrentTops.SelectedIndex > -1)
+            {
+                toBeAdded.toppings.RemoveAt(lstCurrentTops.SelectedIndex);
+                switch (toBeAdded.size)
+                {
+                    case size.Small:
+                        toBeAdded.price -= 0.25m;
+                        break;
+                    case size.Medium:
+                        toBeAdded.price -= 0.50m;
+                        break;
+                    case size.Large:
+                        toBeAdded.price -= 0.75m;
+                        break;
+                }
+            }
+
+            updateTops();
+            updateCurrentCost();
         }
 
 
+        #endregion
+
+        #region Data Validation
+        private bool isPizza()
+        {
+            //if the pizza has been initialized and a size has been selected by the user
+            //this is required because the enum size will be small if nothing is selected
+            //by the user
+            if (toBeAdded != null && cboSize.SelectedIndex > -1)
+            {
+                return true;
+            }
+                return false;
+            
+        }
+
+        private void checkCbos()
+        {
+            if (cboType.SelectedIndex < 0 )
+            {
+                MessageBox.Show("A pizza type is requried before doing that");
+                cboType.Focus();
+                return;
+
+            }
+            if (cboSize.SelectedIndex < 0)
+            {
+                MessageBox.Show("A pizza size is required before doing that");
+                cboSize.Focus();
+                return;
+            }
+         }
+        #endregion
     }
 }

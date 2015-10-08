@@ -78,6 +78,7 @@
             this.cboType.Name = "cboType";
             this.cboType.Size = new System.Drawing.Size(121, 21);
             this.cboType.TabIndex = 0;
+            this.cboType.Tag = "pizza type";
             this.cboType.SelectedIndexChanged += new System.EventHandler(this.cboType_SelectedIndexChanged);
             // 
             // cboSize
@@ -92,7 +93,8 @@
             this.cboSize.Name = "cboSize";
             this.cboSize.Size = new System.Drawing.Size(121, 21);
             this.cboSize.TabIndex = 2;
-            this.cboSize.SelectedIndexChanged += new System.EventHandler(this.cboSize_SelectedIndexChanged);
+            this.cboSize.Tag = "pizza size";
+            this.cboSize.SelectedIndexChanged += new System.EventHandler(this.cboSize_SelectedIndexChanged_1);
             // 
             // numSlices
             // 
@@ -411,6 +413,7 @@
             this.txtDetails.Location = new System.Drawing.Point(152, 271);
             this.txtDetails.Multiline = true;
             this.txtDetails.Name = "txtDetails";
+            this.txtDetails.ReadOnly = true;
             this.txtDetails.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDetails.Size = new System.Drawing.Size(296, 147);
             this.txtDetails.TabIndex = 15;

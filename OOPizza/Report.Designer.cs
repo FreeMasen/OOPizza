@@ -35,6 +35,7 @@
             // 
             // txtReport
             // 
+            this.txtReport.Enabled = false;
             this.txtReport.Location = new System.Drawing.Point(0, 0);
             this.txtReport.Multiline = true;
             this.txtReport.Name = "txtReport";
