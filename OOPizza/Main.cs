@@ -45,6 +45,7 @@ namespace OOPizza
         private void resetSelections()
         {
             btnAddPizza.Text = "Add Pizza";
+            txtNotes.Clear();
             cboType.SelectedIndex = -1;
             cboSize.SelectedIndex = -1;
             numSlices.Value = 8;
@@ -134,6 +135,7 @@ namespace OOPizza
         {
             setSize();
             updateCurrentCost();
+            
         }
 
         private void btnAddPizza_Click(object sender, EventArgs e)

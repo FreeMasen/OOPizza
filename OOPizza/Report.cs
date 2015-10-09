@@ -55,7 +55,7 @@ namespace OOPizza
         private void setText()
         {
             string nl = Environment.NewLine;
-            txtReport.Text = "Pizza Party Plan " + DateTime.Today;
+            txtReport.Text = "Pizza Party Plan " + DateTime.Today.ToShortDateString();
             txtReport.Text += nl;
             txtReport.Text += "----------";
 
@@ -73,7 +73,7 @@ namespace OOPizza
             }
 
             decimal subTotal = calculateTotal();
-            decimal tax = (subTotal*0.75m);
+            decimal tax = (subTotal*0.075m);
 
 
             txtReport.Text += string.Format("{0}{1}SubTotal: {2:C}",nl,nl, subTotal);
